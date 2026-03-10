@@ -4,6 +4,7 @@ import { authOptions } from "@/shared/auth";
 import {
   getPendingApplications,
   getAllRounds,
+  getClubSettings,
 } from "@/actions";
 import {
   Card,
@@ -14,6 +15,7 @@ import {
 } from "@/presentation/components/ui";
 import { ApplicationManagement } from "./application-management";
 import { RoundManagement } from "./round-management";
+import { ClubSettingsManagement } from "./club-settings-management";
 
 export const dynamic = "force-dynamic";
 
@@ -24,21 +26,17 @@ export default async function AdminPage() {
     redirect("/");
   }
 
-  const [pendingApplications, rounds] = await Promise.all([
+  const [pendingApplications, rounds, clubSettings] = await Promise.all([
     getPendingApplications(),
     getAllRounds(),
+    getClubSettings(),
   ]);
 
   return (
     <div className="bg-gray-6 min-h-screen">
-      <div className="container-custom py-8 md:py-12">
-        {/* 페이지 타이틀 */}
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold">관리자</h1>
-          <p className="text-muted-foreground mt-1">
-            클럽 운영 관리
-          </p>
-        </div>
+      <div className="container-custom py-8 md:py-12 space-y-6">
+        {/* 클럽 활동 설정 */}
+        <ClubSettingsManagement settings={clubSettings} />
 
         <div className="grid lg:grid-cols-2 gap-6">
           {/* 참가 신청 관리 */}
@@ -55,17 +53,7 @@ export default async function AdminPage() {
           </Card>
 
           {/* 차수 관리 */}
-          <Card>
-            <CardHeader>
-              <CardTitle>성장일지 차수 관리</CardTitle>
-              <CardDescription>
-                제출 기간 설정
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <RoundManagement rounds={rounds} />
-            </CardContent>
-          </Card>
+          <RoundManagement rounds={rounds} />
         </div>
       </div>
     </div>

@@ -39,8 +39,13 @@ export default async function DashboardPage() {
     getAllRounds(),
   ]);
 
-  // 활성화된 차수 필터링
-  const activeRounds = rounds.filter((r) => r.isActive);
+  // 현재 진행 중인 차수 필터링 (날짜 기반)
+  const now = new Date();
+  const activeRounds = rounds.filter((r) => {
+    const start = new Date(r.submissionStartDate);
+    const end = new Date(r.submissionEndDate);
+    return now >= start && now <= end;
+  });
 
   return (
     <div className="bg-gray-6 min-h-screen">

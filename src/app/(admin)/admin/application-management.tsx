@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { approveApplication, rejectApplication } from "@/actions";
 import {
   Table,
@@ -31,7 +32,12 @@ export function ApplicationManagement({
 
   const handleApprove = (id: string) => {
     startTransition(async () => {
-      await approveApplication(id);
+      const result = await approveApplication(id);
+      if (result.success) {
+        toast.success("참가 신청이 승인되었습니다.");
+      } else {
+        toast.error(result.error || "승인에 실패했습니다.");
+      }
       router.refresh();
     });
   };
@@ -39,7 +45,12 @@ export function ApplicationManagement({
   const handleReject = (id: string) => {
     const reason = prompt("거절 사유를 입력해주세요 (선택사항):");
     startTransition(async () => {
-      await rejectApplication(id, reason || undefined);
+      const result = await rejectApplication(id, reason || undefined);
+      if (result.success) {
+        toast.success("참가 신청이 거절되었습니다.");
+      } else {
+        toast.error(result.error || "거절에 실패했습니다.");
+      }
       router.refresh();
     });
   };

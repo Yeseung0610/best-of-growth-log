@@ -37,11 +37,13 @@ export function createClubSettingsRepository(): ClubSettingsRepository {
 
     async update(data: UpdateClubSettingsData): Promise<ClubSettings> {
       const updateData = {
+        id: SETTINGS_DOC_ID,
         ...data,
         updatedAt: new Date(),
       };
 
-      await collection.doc(SETTINGS_DOC_ID).update(updateData);
+      // set with merge: true - 문서가 없으면 생성, 있으면 업데이트
+      await collection.doc(SETTINGS_DOC_ID).set(updateData, { merge: true });
 
       const updated = await this.get();
       if (!updated) {

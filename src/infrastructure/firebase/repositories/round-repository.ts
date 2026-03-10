@@ -31,15 +31,21 @@ export function createRoundRepository(): RoundRepository {
     },
 
     async findActive(): Promise<Round | null> {
+      // 현재 날짜가 제출 기간 내인 차수를 찾음
+      const now = new Date();
       const snapshot = await collection
-        .where("isActive", "==", true)
-        .limit(1)
+        .where("submissionStartDate", "<=", now)
+        .orderBy("submissionStartDate", "desc")
         .get();
 
-      if (snapshot.empty) {
-        return null;
+      // submissionEndDate도 확인하여 현재 진행 중인 차수 반환
+      for (const doc of snapshot.docs) {
+        const round = docToRound(doc);
+        if (round.submissionEndDate >= now) {
+          return round;
+        }
       }
-      return docToRound(snapshot.docs[0]);
+      return null;
     },
 
     async findAll(): Promise<Round[]> {

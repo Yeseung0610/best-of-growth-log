@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
 import "./globals.css";
 import { SessionProvider } from "@/presentation/contexts";
 import { Header } from "@/presentation/components/layout";
@@ -24,6 +25,16 @@ export default function RootLayout({
             <Header />
             <main className="flex-1">{children}</main>
           </div>
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                background: "#111111",
+                color: "#ffffff",
+                border: "none",
+              },
+            }}
+          />
         </SessionProvider>
       </body>
     </html>

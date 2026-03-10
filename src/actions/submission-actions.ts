@@ -67,6 +67,17 @@ export async function submitGrowthLog(
     return { success: false, error: "참가자로 등록되어 있지 않습니다" };
   }
 
+  // 클럽 활동 기간 확인
+  const settingsRepo = createClubSettingsRepository();
+  const settings = await settingsRepo.get();
+  const now = new Date();
+
+  if (settings?.activityStartDate && settings?.activityEndDate) {
+    if (now < settings.activityStartDate || now > settings.activityEndDate) {
+      return { success: false, error: "클럽 활동 기간이 아닙니다" };
+    }
+  }
+
   // URL에서 플랫폼 감지
   const detectedPlatform = detectPlatformFromPostUrl(postUrl);
   if (!detectedPlatform) {
@@ -107,7 +118,6 @@ export async function submitGrowthLog(
   }
 
   // 제출 기간 확인
-  const now = new Date();
   if (
     now < activeRound.submissionStartDate ||
     now > activeRound.submissionEndDate
@@ -158,8 +168,6 @@ export async function submitGrowthLog(
   }
 
   // 점수 계산
-  const settingsRepo = createClubSettingsRepository();
-  const settings = await settingsRepo.get();
   const scoreResult = calculateScore(blogData, {
     likeScore: settings?.likeScore || 1,
     uniqueCommenterScore: settings?.uniqueCommenterScore || 5,

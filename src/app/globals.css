@@ -38,6 +38,10 @@
   --color-input: var(--color-gray-5);
   --color-ring: var(--color-gray-black);
 
+  /* Popover */
+  --color-popover: var(--color-gray-white);
+  --color-popover-foreground: var(--color-gray-black);
+
   /* Radius */
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;

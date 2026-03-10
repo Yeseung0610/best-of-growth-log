@@ -29,6 +29,7 @@ export {
   createRound,
   activateRound,
   deactivateRound,
+  deleteRound,
   getClubSettings,
   updateClubSettings,
   setUserAsAdmin,

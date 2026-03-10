@@ -201,6 +201,29 @@ export async function deactivateRound(
   return { success: true };
 }
 
+/**
+ * 차수 삭제
+ */
+export async function deleteRound(
+  roundId: string
+): Promise<{ success: boolean; error?: string }> {
+  const adminId = await requireAdmin();
+  if (!adminId) {
+    return { success: false, error: "관리자 권한이 필요합니다" };
+  }
+
+  const roundRepo = createRoundRepository();
+  const round = await roundRepo.findById(roundId);
+
+  if (!round) {
+    return { success: false, error: "차수를 찾을 수 없습니다" };
+  }
+
+  await roundRepo.delete(roundId);
+
+  return { success: true };
+}
+
 // ===== 클럽 설정 =====
 
 /**

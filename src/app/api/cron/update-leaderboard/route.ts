@@ -35,6 +35,19 @@ export async function GET(request: NextRequest) {
     const settingsRepo = createClubSettingsRepository();
 
     const settings = await settingsRepo.get();
+
+    // 클럽 활동 기간 확인
+    const now = new Date();
+    if (settings?.activityStartDate && settings?.activityEndDate) {
+      if (now < settings.activityStartDate || now > settings.activityEndDate) {
+        return NextResponse.json({
+          success: true,
+          message: "Outside club activity period, skipping update",
+          timestamp: new Date().toISOString(),
+        });
+      }
+    }
+
     const likeScore = settings?.likeScore || 1;
     const uniqueCommenterScore = settings?.uniqueCommenterScore || 5;
 

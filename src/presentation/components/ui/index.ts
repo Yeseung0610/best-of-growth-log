@@ -21,3 +21,14 @@ export {
   TableCell,
   TableCaption,
 } from "./table";
+export {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverAnchor,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverDescription,
+} from "./popover";
+export { Calendar } from "./calendar";
+export { DatePicker } from "./date-picker";
