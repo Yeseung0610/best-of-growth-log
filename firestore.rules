@@ -1,0 +1,71 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 헬퍼 함수: 인증된 사용자인지 확인
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // 헬퍼 함수: 본인인지 확인
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // 헬퍼 함수: 관리자인지 확인
+    function isAdmin() {
+      return isAuthenticated() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN';
+    }
+
+    // 사용자 컬렉션
+    match /users/{userId} {
+      // 읽기: 본인 또는 관리자만
+      allow read: if isOwner(userId) || isAdmin();
+      // 쓰기: 서버에서만 (Admin SDK)
+      allow write: if false;
+    }
+
+    // 참가 신청 컬렉션
+    match /applications/{applicationId} {
+      // 읽기: 본인 또는 관리자
+      allow read: if isAuthenticated() &&
+        (resource.data.userId == request.auth.uid || isAdmin());
+      // 쓰기: 서버에서만 (Admin SDK)
+      allow write: if false;
+    }
+
+    // 참가자 컬렉션
+    match /participants/{participantId} {
+      // 읽기: 모든 인증된 사용자 (리더보드용)
+      allow read: if isAuthenticated();
+      // 쓰기: 서버에서만 (Admin SDK)
+      allow write: if false;
+    }
+
+    // 차수 컬렉션
+    match /rounds/{roundId} {
+      // 읽기: 모든 인증된 사용자
+      allow read: if isAuthenticated();
+      // 쓰기: 서버에서만 (Admin SDK)
+      allow write: if false;
+    }
+
+    // 제출 컬렉션
+    match /submissions/{submissionId} {
+      // 읽기: 본인의 제출 또는 관리자
+      allow read: if isAuthenticated() &&
+        (resource.data.participantId == request.auth.uid || isAdmin());
+      // 쓰기: 서버에서만 (Admin SDK)
+      allow write: if false;
+    }
+
+    // 클럽 설정 컬렉션
+    match /clubSettings/{settingsId} {
+      // 읽기: 모든 인증된 사용자
+      allow read: if isAuthenticated();
+      // 쓰기: 서버에서만 (Admin SDK)
+      allow write: if false;
+    }
+  }
+}
