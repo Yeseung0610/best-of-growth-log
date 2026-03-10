@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -13,25 +14,17 @@ import type { LeaderboardEntry } from "@/domain/entities";
 
 interface LeaderboardTableProps {
   entries: LeaderboardEntry[];
-  onRowClick?: (participantId: string) => void;
 }
 
 /**
  * 리더보드 테이블 컴포넌트
  */
-export function LeaderboardTable({
-  entries,
-  onRowClick,
-}: LeaderboardTableProps) {
+export function LeaderboardTable({ entries }: LeaderboardTableProps) {
   const getRankDisplay = (rank: number) => {
     if (rank <= 3) {
-      return (
-        <span className="font-semibold text-green-1">{rank}</span>
-      );
+      return <span className="font-semibold">{rank}</span>;
     }
-    return (
-      <span className="text-muted-foreground">{rank}</span>
-    );
+    return <span className="text-muted-foreground">{rank}</span>;
   };
 
   if (entries.length === 0) {
@@ -59,29 +52,44 @@ export function LeaderboardTable({
         {entries.map((entry) => (
           <TableRow
             key={entry.participantId}
-            className={onRowClick ? "cursor-pointer" : ""}
-            onClick={() => onRowClick?.(entry.participantId)}
+            className="cursor-pointer hover:bg-gray-6"
           >
-            <TableCell>{getRankDisplay(entry.rank)}</TableCell>
             <TableCell>
-              <span className="font-medium">{entry.name}</span>
+              <Link href={`/participant/${entry.participantId}`} className="block">
+                {getRankDisplay(entry.rank)}
+              </Link>
+            </TableCell>
+            <TableCell>
+              <Link href={`/participant/${entry.participantId}`} className="block">
+                <span className="font-medium">{entry.name}</span>
+              </Link>
             </TableCell>
             <TableCell className="hidden sm:table-cell">
-              <Badge variant="outline">
-                {entry.blogPlatform.toLowerCase()}
-              </Badge>
+              <Link href={`/participant/${entry.participantId}`} className="block">
+                <Badge variant="outline">
+                  {entry.blogPlatform.toLowerCase()}
+                </Badge>
+              </Link>
             </TableCell>
             <TableCell className="text-center hidden md:table-cell">
-              {entry.submissionCount}
+              <Link href={`/participant/${entry.participantId}`} className="block">
+                {entry.submissionCount}
+              </Link>
             </TableCell>
             <TableCell className="text-center hidden md:table-cell">
-              {entry.totalLikes}
+              <Link href={`/participant/${entry.participantId}`} className="block">
+                {entry.totalLikes}
+              </Link>
             </TableCell>
             <TableCell className="text-center hidden lg:table-cell">
-              {entry.totalComments}
+              <Link href={`/participant/${entry.participantId}`} className="block">
+                {entry.totalComments}
+              </Link>
             </TableCell>
             <TableCell className="text-right">
-              <span className="font-semibold">{entry.totalScore}</span>
+              <Link href={`/participant/${entry.participantId}`} className="block">
+                <span className="font-semibold">{entry.totalScore}</span>
+              </Link>
             </TableCell>
           </TableRow>
         ))}

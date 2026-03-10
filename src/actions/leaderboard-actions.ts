@@ -25,30 +25,37 @@ export async function getLeaderboard(
 }
 
 /**
- * 참가자 상세 정보 조회
+ * 참가자 상세 정보 조회 (순위 포함)
  *
  * @param participantId - 참가자 ID
- * @returns 참가자 정보 및 제출 목록
+ * @returns 참가자 정보, 순위 및 제출 목록
  */
 export async function getParticipantDetail(participantId: string): Promise<{
   participant: Participant | null;
+  rank: number;
   submissions: Submission[];
 }> {
   try {
     const participantRepo = createParticipantRepository();
     const submissionRepo = createSubmissionRepository();
 
-    const participant = await participantRepo.findById(participantId);
+    const [participant, leaderboard, submissions] = await Promise.all([
+      participantRepo.findById(participantId),
+      participantRepo.findTopByScore(1000), // 순위 계산을 위해 전체 조회
+      submissionRepo.findByParticipantId(participantId),
+    ]);
+
     if (!participant) {
-      return { participant: null, submissions: [] };
+      return { participant: null, rank: 0, submissions: [] };
     }
 
-    const submissions = await submissionRepo.findByParticipantId(participantId);
+    // 순위 계산
+    const rank = leaderboard.findIndex((e) => e.participantId === participantId) + 1;
 
-    return { participant, submissions };
+    return { participant, rank, submissions };
   } catch (error) {
     console.error("Failed to get participant detail:", error);
-    return { participant: null, submissions: [] };
+    return { participant: null, rank: 0, submissions: [] };
   }
 }
 
