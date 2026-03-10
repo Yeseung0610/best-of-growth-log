@@ -141,18 +141,18 @@ export function RoundManagement({ rounds }: RoundManagementProps) {
         <Card>
           <CardContent className="pt-6">
             <form action={handleCreateRound} className="space-y-4">
-              <div className="grid gap-4 md:grid-cols-3">
-                <div className="space-y-2">
-                  <Label htmlFor="roundNumber">차수 번호</Label>
-                  <Input
-                    id="roundNumber"
-                    name="roundNumber"
-                    type="number"
-                    defaultValue={nextRoundNumber}
-                    required
-                    disabled={isPending}
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="roundNumber">차수 번호</Label>
+                <Input
+                  id="roundNumber"
+                  name="roundNumber"
+                  type="number"
+                  defaultValue={nextRoundNumber}
+                  required
+                  disabled={isPending}
+                />
+              </div>
+              <div className="grid gap-4 grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="startDate">제출 시작일</Label>
                   <Input
