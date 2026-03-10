@@ -7,7 +7,8 @@ import { getLeaderboard, getOverallStats, getMyApplication } from "@/actions";
 import { createParticipantRepository } from "@/infrastructure/firebase/repositories";
 import { Card, CardContent, CardHeader, CardTitle, Button } from "@/presentation/components/ui";
 import { LeaderboardTable } from "@/presentation/components/leaderboard";
-import { Trophy, LogIn, PenLine } from "lucide-react";
+import { LoginButton } from "@/presentation/components/auth";
+import { Trophy, PenLine } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -88,12 +89,7 @@ export default async function HomePage() {
                       참가 신청하기
                     </Button>
                   </Link>
-                  <Link href="/api/auth/signin">
-                    <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                      <LogIn className="h-5 w-5" />
-                      로그인
-                    </Button>
-                  </Link>
+                  <LoginButton className="w-full sm:w-auto" />
                 </>
               )}
             </div>
