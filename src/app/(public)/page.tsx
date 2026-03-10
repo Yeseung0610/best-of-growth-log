@@ -50,7 +50,7 @@ export default async function HomePage() {
               1TH BEST OF GROWTH LOG
             </h1>
             <p className="mt-4 text-lg text-muted-foreground">
-              성장일지를 작성하고, 서로 응원하며 함께 성장하세요
+              성장일지를 작성하고, 서로 응원하며 함께 성장해요!
             </p>
 
             {/* Stats */}
