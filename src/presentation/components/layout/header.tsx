@@ -54,7 +54,7 @@ export function Header() {
               </Button>
             </>
           ) : (
-            <Button onClick={login}>
+            <Button variant="outline" size="sm" onClick={login}>
               <LogIn className="h-4 w-4" />
               로그인
             </Button>

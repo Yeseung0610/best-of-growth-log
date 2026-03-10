@@ -15,7 +15,7 @@ export interface BlogUrlValidationResult {
  * 블로그 플랫폼별 URL 패턴
  */
 const BLOG_PATTERNS: Record<BlogPlatform, RegExp> = {
-  VELOG: /^https?:\/\/velog\.io\/@([a-zA-Z0-9_-]+)\/?$/,
+  VELOG: /^https?:\/\/velog\.io\/@([a-zA-Z0-9_-]+)\/posts\/?$/,
   TISTORY: /^https?:\/\/([a-zA-Z0-9_-]+)\.tistory\.com\/?$/,
   MEDIUM: /^https?:\/\/medium\.com\/@([a-zA-Z0-9._-]+)\/?$/,
 };
@@ -102,7 +102,7 @@ function normalizeUrl(
 ): string {
   switch (platform) {
     case "VELOG":
-      return `https://velog.io/@${username}`;
+      return `https://velog.io/@${username}/posts`;
     case "TISTORY":
       return `https://${username}.tistory.com`;
     case "MEDIUM":

@@ -61,9 +61,10 @@ function parseVelogPostUrl(
 
 /**
  * Velog 블로그 URL에서 username 추출
+ * URL 형식: https://velog.io/@username/posts
  */
 function parseVelogAccountUrl(accountUrl: string): string | null {
-  const match = accountUrl.match(/^https?:\/\/velog\.io\/@([a-zA-Z0-9_-]+)\/?$/);
+  const match = accountUrl.match(/^https?:\/\/velog\.io\/@([a-zA-Z0-9_-]+)\/posts\/?$/);
   return match ? match[1] : null;
 }
 

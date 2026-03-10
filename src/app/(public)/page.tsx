@@ -1,6 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getLeaderboard, getOverallStats } from "@/actions";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/shared/auth";
+import { getLeaderboard, getOverallStats, getMyApplication } from "@/actions";
+import { createParticipantRepository } from "@/infrastructure/firebase/repositories";
 import { Card, CardContent, CardHeader, CardTitle, Button } from "@/presentation/components/ui";
 import { LeaderboardTable } from "@/presentation/components/leaderboard";
 import { Trophy, LogIn, PenLine } from "lucide-react";
@@ -8,10 +12,25 @@ import { Trophy, LogIn, PenLine } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const [leaderboard, stats] = await Promise.all([
+  const [session, leaderboard, stats] = await Promise.all([
+    getServerSession(authOptions),
     getLeaderboard(50),
     getOverallStats(),
   ]);
+
+  // 로그인된 사용자: 참가 신청 여부 확인
+  if (session?.user?.id) {
+    const participantRepo = createParticipantRepository();
+    const [participant, application] = await Promise.all([
+      participantRepo.findByUserId(session.user.id),
+      getMyApplication(),
+    ]);
+
+    // 참가자가 아니고 신청서도 없으면 → /apply로 리다이렉트
+    if (!participant && !application) {
+      redirect("/apply");
+    }
+  }
 
   return (
     <div className="min-h-screen">
@@ -46,24 +65,37 @@ export default async function HomePage() {
               </div>
               <div className="text-center">
                 <p className="text-3xl md:text-4xl font-bold">{stats.topScore.toLocaleString()}</p>
-                <p className="text-sm text-muted-foreground mt-1">1등 기록</p>
+                <p className="text-sm text-muted-foreground mt-1">1등 포인트</p>
               </div>
             </div>
 
             {/* CTA */}
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-              <Link href="/dashboard">
-                <Button size="lg" className="w-full sm:w-auto">
-                  <PenLine className="h-5 w-5" />
-                  참가 신청하기
-                </Button>
-              </Link>
-              <Link href="/api/auth/signin">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                  <LogIn className="h-5 w-5" />
-                  로그인
-                </Button>
-              </Link>
+              {session?.user ? (
+                // 로그인됨: 대시보드 또는 신청 현황 버튼
+                <Link href="/dashboard">
+                  <Button size="lg" className="w-full sm:w-auto">
+                    <PenLine className="h-5 w-5" />
+                    대시보드
+                  </Button>
+                </Link>
+              ) : (
+                // 비로그인: 참가 신청 + 로그인 버튼
+                <>
+                  <Link href="/apply">
+                    <Button size="lg" className="w-full sm:w-auto">
+                      <PenLine className="h-5 w-5" />
+                      참가 신청하기
+                    </Button>
+                  </Link>
+                  <Link href="/api/auth/signin">
+                    <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                      <LogIn className="h-5 w-5" />
+                      로그인
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>

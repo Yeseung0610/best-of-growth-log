@@ -184,13 +184,18 @@ export const mediumScraper: BlogScraper = {
     }
 
     try {
-      const response = await fetch(blogAccountUrl, {
+      // Medium RSS 피드로 계정 존재 여부 확인
+      // 프로필 페이지는 403이지만 RSS 피드는 접근 가능
+      const rssUrl = `https://medium.com/feed/@${username}`;
+      const response = await fetch(rssUrl, {
         method: "HEAD",
         headers: {
           "User-Agent":
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         },
       });
+
+      // 200: 계정 존재, 404: 계정 없음
       return response.ok;
     } catch {
       return false;
