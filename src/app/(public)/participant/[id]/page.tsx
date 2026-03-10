@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getParticipantDetail } from "@/actions";
 import {
@@ -9,7 +8,6 @@ import {
   Badge,
 } from "@/presentation/components/ui";
 import {
-  ArrowLeft,
   Trophy,
   Heart,
   MessageCircle,
@@ -36,15 +34,6 @@ export default async function ParticipantPage({ params }: ParticipantPageProps) 
   return (
     <div className="min-h-screen bg-gray-6">
       <div className="container-custom py-8 md:py-12">
-        {/* Back Button */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6 transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          리더보드로 돌아가기
-        </Link>
-
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Left Column - Profile & Stats */}
           <div className="space-y-6">
