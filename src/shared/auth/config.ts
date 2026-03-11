@@ -68,15 +68,18 @@ export const authOptions: NextAuthOptions = {
      * 사용자 역할 정보를 토큰에 포함
      */
     async jwt({ token, user }) {
+      // 초기 로그인 시 uid 설정
       if (user) {
         token.uid = user.id;
+      }
 
-        // Firestore에서 사용자 역할 조회
+      // 매번 Firestore에서 사용자 역할 조회 (role 변경 즉시 반영)
+      if (token.uid) {
         try {
           const db = getAdminDb();
           const userDoc = await db
             .collection(COLLECTIONS.USERS)
-            .doc(user.id)
+            .doc(token.uid as string)
             .get();
 
           if (userDoc.exists) {
@@ -86,7 +89,7 @@ export const authOptions: NextAuthOptions = {
             token.role = "USER";
           }
         } catch {
-          token.role = "USER";
+          token.role = token.role || "USER";
         }
       }
 
